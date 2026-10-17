@@ -1,0 +1,28 @@
+---
+k8s_taps:
+  - aws/tap
+  - norwoodj/tap
+  - dagger/tap
+
+k8s_packages:
+  - kubernetes-cli
+  - helm
+  - k9s
+  - kubectx
+  - krew
+  - argocd
+  - kustomize
+  - eksctl
+  - kubeconform
+  - aws/tap/eks-node-viewer
+  - norwoodj/tap/helm-docs
+  - dagger/tap/dagger
+
+k8s_krew_plugins:
+  - stern
+  - neat
+  - node-shell
+  - resource-capacity
+  - viewnode
+
+k8s_casks: []

@@ -1,0 +1,33 @@
+---
+- name: Ensure Python CLI tools (uv, ruff) are installed via Homebrew
+  community.general.homebrew:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ python_packages }}"
+
+- name: Install default Python versions using uv
+  ansible.builtin.command:
+    cmd: "{{ homebrew_prefix }}/bin/uv python install {{ item }}"
+  loop: "{{ python_default_versions }}"
+  register: uv_python_install
+  changed_when: "'Installed' in uv_python_install.stderr or 'Installed' in uv_python_install.stdout"
+
+- name: Install global Python tools using uv tool
+  ansible.builtin.command:
+    cmd: "{{ homebrew_prefix }}/bin/uv tool install {{ item }}"
+  loop: "{{ python_global_tools }}"
+  register: uv_tool_install
+  changed_when: "'Installed' in uv_tool_install.stderr or 'Installed' in uv_tool_install.stdout"
+  when: python_global_tools is defined and python_global_tools | length > 0
+
+- name: Create Fish completions directory
+  ansible.builtin.file:
+    path: "{{ ansible_facts['user_dir'] }}/.config/fish/completions"
+    state: directory
+    mode: '0755'
+
+- name: Generate Fish completions for uv
+  ansible.builtin.shell: |
+    {{ homebrew_prefix }}/bin/uv generate-shell-completion fish > {{ ansible_facts['user_dir'] }}/.config/fish/completions/uv.fish
+  args:
+    creates: "{{ ansible_facts['user_dir'] }}/.config/fish/completions/uv.fish"

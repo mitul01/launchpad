@@ -1,0 +1,41 @@
+---
+- name: Ensure fnm (Fast Node Manager) is installed via Homebrew
+  community.general.homebrew:
+    name: fnm
+    state: present
+
+- name: Create Fish completions directory
+  ansible.builtin.file:
+    path: "{{ ansible_facts['user_dir'] }}/.config/fish/completions"
+    state: directory
+    mode: '0755'
+
+- name: Generate Fish completions for fnm
+  ansible.builtin.shell: |
+    {{ homebrew_prefix }}/bin/fnm completions --shell fish > {{ ansible_facts['user_dir'] }}/.config/fish/completions/fnm.fish
+  args:
+    creates: "{{ ansible_facts['user_dir'] }}/.config/fish/completions/fnm.fish"
+
+- name: Install Node.js default versions using fnm
+  ansible.builtin.shell: |
+    {{ homebrew_prefix }}/bin/fnm install {{ item }}
+  loop: "{{ node_default_versions }}"
+  register: fnm_install_result
+  changed_when: "'Installing' in fnm_install_result.stdout or 'Installing' in fnm_install_result.stderr"
+
+- name: Set default Node.js version in fnm
+  ansible.builtin.shell: |
+    {{ homebrew_prefix }}/bin/fnm default {{ node_default_versions[0] }}
+  register: fnm_default_result
+  changed_when: false
+
+- name: Install global Node packages (pnpm, yarn, typescript)
+  ansible.builtin.shell: |
+    eval ({{ homebrew_prefix }}/bin/fnm env)
+    npm install -g {{ item }}
+  args:
+    executable: "{{ homebrew_prefix }}/bin/fish"
+  loop: "{{ node_global_packages }}"
+  register: npm_global_install
+  changed_when: "'added' in npm_global_install.stdout"
+  when: node_global_packages is defined and node_global_packages | length > 0

@@ -1,0 +1,9 @@
+---
+go_packages:
+  - go
+  - golangci-lint
+  - gopls
+
+go_global_tools:
+  - "github.com/air-verse/air@latest"
+  - "github.com/go-delve/delve/cmd/dlv@latest"

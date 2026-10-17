@@ -1,0 +1,14 @@
+---
+utility_packages:
+  - git
+  - gh
+  - jq
+  - yq
+  - ripgrep
+  - bat
+  - eza
+  - yamllint
+  - wget
+  - watch
+  - go-jsonnet
+  - conftest

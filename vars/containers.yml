@@ -1,0 +1,9 @@
+---
+container_casks:
+  - orbstack
+
+container_packages:
+  - docker-compose
+  - docker-buildx
+  - lazydocker
+  - ctop

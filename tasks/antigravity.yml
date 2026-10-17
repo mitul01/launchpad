@@ -1,0 +1,12 @@
+---
+- name: Check if Antigravity CLI (agy) is installed
+  ansible.builtin.command:
+    cmd: "which agy"
+  register: agy_check
+  changed_when: false
+  failed_when: false
+
+- name: Install Antigravity CLI (agy) via official install script
+  ansible.builtin.shell: |
+    curl -fsSL {{ antigravity_install_script_url }} | bash
+  when: agy_check.rc != 0

@@ -1,0 +1,14 @@
+---
+mcp_github_token: "{{ lookup('env', 'GITHUB_TOKEN') | default('', true) }}"
+
+mcp_jira_host: "https://propertyguru.atlassian.net"
+mcp_jira_email: "mitul.tandon@propertyguru.com.sg"
+mcp_jira_api_token: "{{ lookup('env', 'JIRA_API_TOKEN') | default('', true) }}"
+
+mcp_confluence_host: "https://propertyguru.atlassian.net"
+mcp_confluence_email: "mitul.tandon@propertyguru.com.sg"
+mcp_confluence_api_token: "{{ lookup('env', 'CONFLUENCE_API_TOKEN') | default('', true) }}"
+
+mcp_datadog_api_key: "{{ lookup('env', 'DATADOG_API_KEY') | default('', true) }}"
+mcp_datadog_app_key: "{{ lookup('env', 'DATADOG_APP_KEY') | default('', true) }}"
+mcp_datadog_site: "datadoghq.com"

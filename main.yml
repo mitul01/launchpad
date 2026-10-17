@@ -1,0 +1,69 @@
+---
+- name: Configure macOS Workstation
+  hosts: localhost
+  connection: local
+  gather_facts: true
+
+  vars_files:
+    - vars/shell.yml
+    - vars/utility.yml
+    - vars/gui.yml
+    - vars/python.yml
+    - vars/node.yml
+    - vars/go.yml
+    - vars/terraform.yml
+    - vars/containers.yml
+    - vars/k8s.yml
+    - vars/aws.yml
+    - vars/antigravity.yml
+    - vars/mcp.yml
+
+  pre_tasks:
+    - name: Detect Homebrew prefix
+      ansible.builtin.stat:
+        path: /opt/homebrew/bin/brew
+      register: brew_arm
+
+    - name: Set Homebrew facts
+      ansible.builtin.set_fact:
+        homebrew_prefix: "{{ '/opt/homebrew' if brew_arm.stat.exists else '/usr/local' }}"
+
+  tasks:
+    - name: Configure Ghostty Terminal
+      ansible.builtin.include_tasks: tasks/terminal_ghostty.yml
+
+    - name: Configure Fish Shell
+      ansible.builtin.include_tasks: tasks/shell_fish.yml
+
+    - name: Configure Utility CLI Tools
+      ansible.builtin.include_tasks: tasks/utility.yml
+
+    - name: Configure GUI Applications & Fonts
+      ansible.builtin.include_tasks: tasks/gui.yml
+
+    - name: Configure Python with uv
+      ansible.builtin.include_tasks: tasks/python.yml
+
+    - name: Configure Node.js with fnm
+      ansible.builtin.include_tasks: tasks/node.yml
+
+    - name: Configure Go environment
+      ansible.builtin.include_tasks: tasks/go.yml
+
+    - name: Configure Terraform, OpenTofu, and Terragrunt with tenv
+      ansible.builtin.include_tasks: tasks/terraform.yml
+
+    - name: Configure Docker and Container Management
+      ansible.builtin.include_tasks: tasks/containers.yml
+
+    - name: Configure Kubernetes Toolchain
+      ansible.builtin.include_tasks: tasks/k8s.yml
+
+    - name: Configure AWS CLI and SSM Session Manager
+      ansible.builtin.include_tasks: tasks/aws.yml
+
+    - name: Configure Antigravity CLI
+      ansible.builtin.include_tasks: tasks/antigravity.yml
+
+    - name: Configure Model Context Protocol (MCP) Servers
+      ansible.builtin.include_tasks: tasks/mcp.yml

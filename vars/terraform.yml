@@ -1,0 +1,18 @@
+---
+iac_taps:
+  - terraform-linters/tflint
+
+iac_packages:
+  - tenv
+  - tflint
+  - tfsec
+  - terraform-docs
+
+terraform_default_versions:
+  - "1.8.5"
+
+opentofu_default_versions:
+  - "1.7.0"
+
+terragrunt_default_versions:
+  - "0.58.0"

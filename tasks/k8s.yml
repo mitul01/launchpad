@@ -1,0 +1,49 @@
+---
+- name: Add Kubernetes & DevOps Homebrew taps
+  community.general.homebrew_tap:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ k8s_taps }}"
+  when: k8s_taps is defined and k8s_taps | length > 0
+
+- name: Install Kubernetes CLI tools via Homebrew
+  community.general.homebrew:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ k8s_packages }}"
+
+- name: Install Kubernetes GUI applications
+  community.general.homebrew_cask:
+    name: "{{ item }}"
+    state: present
+    accept_external_apps: true
+    install_options: "force"
+  loop: "{{ k8s_casks }}"
+  when: k8s_casks is defined and k8s_casks | length > 0
+  ignore_errors: true
+
+- name: Install Krew plugins
+  ansible.builtin.shell: |
+    PATH="{{ ansible_facts['user_dir'] }}/.krew/bin:$PATH" {{ homebrew_prefix }}/bin/kubectl krew install {{ item }}
+  loop: "{{ k8s_krew_plugins }}"
+  register: krew_install_result
+  changed_when: false
+  when: k8s_krew_plugins is defined and k8s_krew_plugins | length > 0
+
+- name: Create Fish completion directory
+  ansible.builtin.file:
+    path: "{{ ansible_facts['user_dir'] }}/.config/fish/completions"
+    state: directory
+    mode: '0755'
+
+- name: Generate Fish completions for kubectl
+  ansible.builtin.shell: |
+    {{ homebrew_prefix }}/bin/kubectl completion fish > {{ ansible_facts['user_dir'] }}/.config/fish/completions/kubectl.fish
+  args:
+    creates: "{{ ansible_facts['user_dir'] }}/.config/fish/completions/kubectl.fish"
+
+- name: Generate Fish completions for helm
+  ansible.builtin.shell: |
+    {{ homebrew_prefix }}/bin/helm completion fish > {{ ansible_facts['user_dir'] }}/.config/fish/completions/helm.fish
+  args:
+    creates: "{{ ansible_facts['user_dir'] }}/.config/fish/completions/helm.fish"

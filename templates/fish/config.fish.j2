@@ -1,0 +1,47 @@
+# config.fish - Managed by Ansible
+
+if status is-interactive
+    # Commands to run in interactive sessions can go here
+end
+
+# Set Homebrew environment
+if test -f /opt/homebrew/bin/brew
+    eval (/opt/homebrew/bin/brew shellenv)
+else if test -f /usr/local/bin/brew
+    eval (/usr/local/bin/brew shellenv)
+end
+
+# Ensure local bin directory, GOPATH/bin, and Krew bin are in PATH
+fish_add_path ~/.local/bin
+fish_add_path ~/go/bin
+fish_add_path ~/.krew/bin
+
+# Kubernetes short aliases
+alias k="kubectl"
+alias kx="kubectx"
+alias kn="kubens"
+
+# AWS CLI completion
+if type -q aws_completer
+    complete -c aws -f -a '(aws_completer)'
+end
+
+# Environment variables
+{% for key, value in fish_environment_vars.items() %}
+set -gx {{ key }} "{{ value }}"
+{% endfor %}
+
+# Custom Aliases
+{% for alias_name, alias_cmd in fish_aliases.items() %}
+alias {{ alias_name }}="{{ alias_cmd }}"
+{% endfor %}
+
+# Starship Prompt initialization if installed
+if type -q starship
+    starship init fish | source
+end
+
+# fnm (Fast Node Manager) initialization
+if type -q fnm
+    fnm env --use-on-cd --shell fish | source
+end

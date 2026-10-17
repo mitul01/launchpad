@@ -1,0 +1,27 @@
+---
+- name: Ensure Go and development tools are installed via Homebrew
+  community.general.homebrew:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ go_packages }}"
+
+- name: Create GOPATH directory structure
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+  loop:
+    - "{{ ansible_facts['user_dir'] }}/go"
+    - "{{ ansible_facts['user_dir'] }}/go/bin"
+    - "{{ ansible_facts['user_dir'] }}/go/src"
+    - "{{ ansible_facts['user_dir'] }}/go/pkg"
+
+- name: Install global Go CLI tools
+  ansible.builtin.shell: |
+    {{ homebrew_prefix }}/bin/go install {{ item }}
+  environment:
+    GOPATH: "{{ ansible_facts['user_dir'] }}/go"
+  loop: "{{ go_global_tools }}"
+  register: go_tools_install
+  changed_when: false
+  when: go_global_tools is defined and go_global_tools | length > 0

@@ -1,0 +1,6 @@
+---
+- name: Install Utility CLI tools via Homebrew
+  community.general.homebrew:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ utility_packages }}"

@@ -1,0 +1,35 @@
+---
+aws_packages:
+  - awscli
+
+aws_casks:
+  - session-manager-plugin
+  - 1password-cli
+
+aws_default_region: "ap-southeast-1"
+aws_default_output: "json"
+
+aws_profiles:
+  - name: "default"
+    region: "ap-southeast-1"
+    output: "json"
+    sso_start_url: "https://propertyguru.awsapps.com/start"
+    sso_region: "ap-southeast-1"
+    sso_account_id: "199699173728"
+    sso_role_name: "PGAdministratorAccess"
+
+  - name: "propertyguru-main"
+    region: "ap-southeast-1"
+    output: "json"
+    sso_start_url: "https://propertyguru.awsapps.com/start"
+    sso_region: "ap-southeast-1"
+    sso_account_id: "199699173728"
+    sso_role_name: "PGAdministratorAccess"
+
+  - name: "propertyguru-main-readonly"
+    region: "ap-southeast-1"
+    output: "json"
+    sso_start_url: "https://propertyguru.awsapps.com/start"
+    sso_region: "ap-southeast-1"
+    sso_account_id: "199699173728"
+    sso_role_name: "PGReadOnlyAccess"

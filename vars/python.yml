@@ -1,0 +1,12 @@
+---
+python_packages:
+  - uv
+  - ruff
+
+python_default_versions:
+  - "3.12"
+  - "3.11"
+
+python_global_tools:
+  - pipx
+  - yawsso

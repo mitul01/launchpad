@@ -1,0 +1,9 @@
+---
+- name: Install GUI applications and developer fonts via Homebrew Cask
+  community.general.homebrew_cask:
+    name: "{{ item }}"
+    state: present
+    accept_external_apps: true
+    install_options: "force"
+  loop: "{{ gui_casks }}"
+  ignore_errors: true

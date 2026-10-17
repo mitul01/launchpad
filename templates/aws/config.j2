@@ -1,0 +1,18 @@
+# ~/.aws/config - Managed by Ansible (Launchpad)
+
+{% for profile in aws_profiles %}
+{% if profile.name == 'default' %}
+[default]
+{% else %}
+[profile {{ profile.name }}]
+{% endif %}
+region = {{ profile.region | default(aws_default_region) }}
+output = {{ profile.output | default(aws_default_output) }}
+{% if profile.sso_start_url is defined %}
+sso_start_url = {{ profile.sso_start_url }}
+sso_region = {{ profile.sso_region }}
+sso_account_id = {{ profile.sso_account_id }}
+sso_role_name = {{ profile.sso_role_name }}
+{% endif %}
+
+{% endfor %}

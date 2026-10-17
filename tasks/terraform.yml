@@ -1,0 +1,59 @@
+---
+- name: Unlink legacy conflicting Terraform/OpenTofu version managers
+  ansible.builtin.command:
+    cmd: "{{ homebrew_prefix }}/bin/brew unlink {{ item }}"
+  loop:
+    - tfenv
+    - tofuenv
+  register: unlink_result
+  changed_when: false
+  failed_when: false
+
+- name: Add IaC Homebrew taps
+  community.general.homebrew_tap:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ iac_taps }}"
+  when: iac_taps is defined and iac_taps | length > 0
+
+- name: Ensure tenv and IaC linting tools are installed via Homebrew
+  community.general.homebrew:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ iac_packages }}"
+
+- name: Create Fish completions directory
+  ansible.builtin.file:
+    path: "{{ ansible_facts['user_dir'] }}/.config/fish/completions"
+    state: directory
+    mode: '0755'
+
+- name: Generate Fish completions for tenv
+  ansible.builtin.shell: |
+    {{ homebrew_prefix }}/bin/tenv completion fish > {{ ansible_facts['user_dir'] }}/.config/fish/completions/tenv.fish
+  args:
+    creates: "{{ ansible_facts['user_dir'] }}/.config/fish/completions/tenv.fish"
+
+- name: Pre-install default Terraform versions using tenv
+  ansible.builtin.shell: |
+    {{ homebrew_prefix }}/bin/tenv tf install {{ item }}
+  loop: "{{ terraform_default_versions }}"
+  register: tenv_tf_install
+  changed_when: false
+  when: terraform_default_versions is defined and terraform_default_versions | length > 0
+
+- name: Pre-install default OpenTofu versions using tenv
+  ansible.builtin.shell: |
+    {{ homebrew_prefix }}/bin/tenv tofu install {{ item }}
+  loop: "{{ opentofu_default_versions }}"
+  register: tenv_tofu_install
+  changed_when: false
+  when: opentofu_default_versions is defined and opentofu_default_versions | length > 0
+
+- name: Pre-install default Terragrunt versions using tenv
+  ansible.builtin.shell: |
+    {{ homebrew_prefix }}/bin/tenv tg install {{ item }}
+  loop: "{{ terragrunt_default_versions }}"
+  register: tenv_tg_install
+  changed_when: false
+  when: terragrunt_default_versions is defined and terragrunt_default_versions | length > 0

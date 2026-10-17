@@ -1,0 +1,53 @@
+---
+- name: Ensure Fish, Fisher, FZF, and Starship are installed via Homebrew
+  community.general.homebrew:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ shell_packages }}"
+
+- name: Ensure Homebrew Fish binary is listed in /etc/shells
+  ansible.builtin.lineinfile:
+    path: /etc/shells
+    line: "{{ homebrew_prefix }}/bin/fish"
+    state: present
+  become: true
+
+- name: Set Fish as the default shell for current user
+  ansible.builtin.user:
+    name: "{{ ansible_facts['user_id'] }}"
+    shell: "{{ homebrew_prefix }}/bin/fish"
+  become: true
+
+- name: Create Fish configuration directory structure
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+  loop:
+    - "{{ ansible_facts['user_dir'] }}/.config/fish"
+    - "{{ ansible_facts['user_dir'] }}/.config/fish/conf.d"
+    - "{{ ansible_facts['user_dir'] }}/.config/fish/functions"
+
+- name: Deploy config.fish template
+  ansible.builtin.template:
+    src: templates/fish/config.fish.j2
+    dest: "{{ ansible_facts['user_dir'] }}/.config/fish/config.fish"
+    mode: '0644'
+
+- name: Check if Fisher is installed
+  ansible.builtin.stat:
+    path: "{{ ansible_facts['user_dir'] }}/.config/fish/functions/fisher.fish"
+  register: fisher_stat
+
+- name: Install Fisher plugin manager if missing
+  ansible.builtin.shell: |
+    {{ homebrew_prefix }}/bin/fish -c "curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher"
+  when: not fisher_stat.stat.exists
+
+- name: Install Fisher plugins
+  ansible.builtin.shell: |
+    {{ homebrew_prefix }}/bin/fish -c "fisher install {{ item }}"
+  loop: "{{ fish_plugins }}"
+  register: fisher_install_result
+  changed_when: "'Installed' in fisher_install_result.stdout"
+  when: fish_plugins is defined and fish_plugins | length > 0

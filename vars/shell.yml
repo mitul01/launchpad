@@ -1,0 +1,25 @@
+---
+shell_packages:
+  - fish
+  - fisher
+  - fzf
+  - starship
+
+fish_plugins:
+  - jorgebucaran/fisher
+  - PatrickF1/fzf.fish
+  - jethrokuan/z
+
+fish_aliases:
+  g: "git"
+  ll: "eza -l --icons"
+  la: "eza -la --icons"
+  cat: "bat"
+
+fish_environment_vars:
+  EDITOR: "nano"
+  VISUAL: "nano"
+
+ghostty_font_family: "JetBrainsMono Nerd Font"
+ghostty_font_size: 13
+ghostty_theme: "catppuccin-mocha"
