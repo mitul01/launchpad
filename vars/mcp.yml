@@ -1,14 +1,23 @@
 ---
+# MCP Baseline Defaults (All disabled by default; configure in host_vars)
+mcp_enable_github: false
+mcp_enable_notion: false
+mcp_enable_jira: false
+mcp_enable_confluence: false
+mcp_enable_datadog: false
+mcp_enable_steampipe: false
+
+# Secret Lookups
 mcp_github_token: "{{ lookup('env', 'GITHUB_TOKEN') | default('', true) }}"
-
-mcp_jira_host: "https://propertyguru.atlassian.net"
-mcp_jira_email: "mitul.tandon@propertyguru.com.sg"
+mcp_notion_api_token: "{{ lookup('env', 'NOTION_API_TOKEN') | default('', true) }}"
 mcp_jira_api_token: "{{ lookup('env', 'JIRA_API_TOKEN') | default('', true) }}"
-
-mcp_confluence_host: "https://propertyguru.atlassian.net"
-mcp_confluence_email: "mitul.tandon@propertyguru.com.sg"
 mcp_confluence_api_token: "{{ lookup('env', 'CONFLUENCE_API_TOKEN') | default('', true) }}"
-
 mcp_datadog_api_key: "{{ lookup('env', 'DATADOG_API_KEY') | default('', true) }}"
 mcp_datadog_app_key: "{{ lookup('env', 'DATADOG_APP_KEY') | default('', true) }}"
+
+# Blank Placeholders (Set in host_vars when server is enabled)
+mcp_jira_host: ""
+mcp_jira_email: ""
+mcp_confluence_host: ""
+mcp_confluence_email: ""
 mcp_datadog_site: "datadoghq.com"

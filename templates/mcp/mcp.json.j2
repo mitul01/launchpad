@@ -1,57 +1,96 @@
-{
-  "mcpServers": {
-    "github": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-github"
-      ],
-      "env": {
-        "GITHUB_PERSONAL_ACCESS_TOKEN": "{{ mcp_github_token }}"
-      }
-    },
-    "jira": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-jira"
-      ],
-      "env": {
-        "JIRA_HOST": "{{ mcp_jira_host }}",
-        "JIRA_EMAIL": "{{ mcp_jira_email }}",
-        "JIRA_API_TOKEN": "{{ mcp_jira_api_token }}"
-      }
-    },
-    "confluence": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-confluence"
-      ],
-      "env": {
-        "CONFLUENCE_HOST": "{{ mcp_confluence_host }}",
-        "CONFLUENCE_EMAIL": "{{ mcp_confluence_email }}",
-        "CONFLUENCE_API_TOKEN": "{{ mcp_confluence_api_token }}"
-      }
-    },
-    "datadog": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@datadog/mcp-server-datadog"
-      ],
-      "env": {
-        "DATADOG_API_KEY": "{{ mcp_datadog_api_key }}",
-        "DATADOG_APP_KEY": "{{ mcp_datadog_app_key }}",
-        "DATADOG_SITE": "{{ mcp_datadog_site }}"
-      }
-    },
-    "steampipe": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@turbot/steampipe-mcp"
-      ]
+{% set mcp_servers = {} %}
+
+{% if mcp_enable_github | default(false) %}
+{% set _ = mcp_servers.update({
+  "github": {
+    "command": "npx",
+    "args": [
+      "-y",
+      "@modelcontextprotocol/server-github"
+    ],
+    "env": {
+      "GITHUB_PERSONAL_ACCESS_TOKEN": mcp_github_token
     }
   }
-}
+}) %}
+{% endif %}
+
+{% if mcp_enable_notion | default(false) %}
+{% set _ = mcp_servers.update({
+  "notion": {
+    "command": "npx",
+    "args": [
+      "-y",
+      "@notionhq/mcp-server-notion"
+    ],
+    "env": {
+      "NOTION_API_TOKEN": mcp_notion_api_token
+    }
+  }
+}) %}
+{% endif %}
+
+{% if mcp_enable_jira | default(false) %}
+{% set _ = mcp_servers.update({
+  "jira": {
+    "command": "npx",
+    "args": [
+      "-y",
+      "@modelcontextprotocol/server-jira"
+    ],
+    "env": {
+      "JIRA_HOST": mcp_jira_host,
+      "JIRA_EMAIL": mcp_jira_email,
+      "JIRA_API_TOKEN": mcp_jira_api_token
+    }
+  }
+}) %}
+{% endif %}
+
+{% if mcp_enable_confluence | default(false) %}
+{% set _ = mcp_servers.update({
+  "confluence": {
+    "command": "npx",
+    "args": [
+      "-y",
+      "@modelcontextprotocol/server-confluence"
+    ],
+    "env": {
+      "CONFLUENCE_HOST": mcp_confluence_host,
+      "CONFLUENCE_EMAIL": mcp_confluence_email,
+      "CONFLUENCE_API_TOKEN": mcp_confluence_api_token
+    }
+  }
+}) %}
+{% endif %}
+
+{% if mcp_enable_datadog | default(false) %}
+{% set _ = mcp_servers.update({
+  "datadog": {
+    "command": "npx",
+    "args": [
+      "-y",
+      "@datadog/mcp-server-datadog"
+    ],
+    "env": {
+      "DATADOG_API_KEY": mcp_datadog_api_key,
+      "DATADOG_APP_KEY": mcp_datadog_app_key,
+      "DATADOG_SITE": mcp_datadog_site
+    }
+  }
+}) %}
+{% endif %}
+
+{% if mcp_enable_steampipe | default(false) %}
+{% set _ = mcp_servers.update({
+  "steampipe": {
+    "command": "npx",
+    "args": [
+      "-y",
+      "@turbot/steampipe-mcp"
+    ]
+  }
+}) %}
+{% endif %}
+
+{{ {"mcpServers": mcp_servers} | to_nice_json }}

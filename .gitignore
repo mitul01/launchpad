@@ -1,0 +1,10 @@
+# macOS
+.DS_Store
+
+# Ansible
+*.retry
+.ansible/
+
+# Host-specific variable overrides (keep README)
+host_vars/*
+!host_vars/README.md

@@ -4,6 +4,9 @@
   connection: local
   gather_facts: true
 
+  vars:
+    profile: "{{ lookup('env', 'LAUNCHPAD_PROFILE') | default('', true) }}"
+
   vars_files:
     - vars/shell.yml
     - vars/utility.yml
@@ -23,47 +26,89 @@
       ansible.builtin.stat:
         path: /opt/homebrew/bin/brew
       register: brew_arm
+      tags: [always]
 
     - name: Set Homebrew facts
       ansible.builtin.set_fact:
         homebrew_prefix: "{{ '/opt/homebrew' if brew_arm.stat.exists else '/usr/local' }}"
+      tags: [always]
+
+    - name: Load machine-specific or profile host_vars
+      ansible.builtin.include_vars:
+        file: "{{ item }}"
+      with_first_found:
+        - files:
+            - "host_vars/{{ profile }}.yml"
+            - "host_vars/{{ profile }}.yaml"
+            - "host_vars/{{ ansible_facts['hostname'] }}.yml"
+            - "host_vars/{{ ansible_facts['hostname'] }}.yaml"
+            - "host_vars/default.yml"
+            - "host_vars/default.yaml"
+          skip: true
+      tags: [always]
 
   tasks:
     - name: Configure Ghostty Terminal
       ansible.builtin.include_tasks: tasks/terminal_ghostty.yml
+      when: enable_ghostty | default(true)
+      tags: [terminal, ghostty, gui]
 
     - name: Configure Fish Shell
       ansible.builtin.include_tasks: tasks/shell_fish.yml
+      when: enable_shell | default(true)
+      tags: [shell, fish, cli]
 
     - name: Configure Utility CLI Tools
       ansible.builtin.include_tasks: tasks/utility.yml
+      when: enable_utility | default(true)
+      tags: [utility, cli]
 
     - name: Configure GUI Applications & Fonts
       ansible.builtin.include_tasks: tasks/gui.yml
+      when: enable_gui | default(true)
+      tags: [gui, apps]
 
     - name: Configure Python with uv
       ansible.builtin.include_tasks: tasks/python.yml
+      when: enable_python | default(true)
+      tags: [python, dev, cli]
 
     - name: Configure Node.js with fnm
       ansible.builtin.include_tasks: tasks/node.yml
+      when: enable_node | default(true)
+      tags: [node, javascript, dev, cli]
 
     - name: Configure Go environment
       ansible.builtin.include_tasks: tasks/go.yml
+      when: enable_go | default(true)
+      tags: [go, dev, cli]
 
     - name: Configure Terraform, OpenTofu, and Terragrunt with tenv
       ansible.builtin.include_tasks: tasks/terraform.yml
+      when: enable_terraform | default(true)
+      tags: [terraform, iac, dev, cli]
 
     - name: Configure Docker and Container Management
       ansible.builtin.include_tasks: tasks/containers.yml
+      when: enable_containers | default(true)
+      tags: [containers, docker, dev]
 
     - name: Configure Kubernetes Toolchain
       ansible.builtin.include_tasks: tasks/k8s.yml
+      when: enable_k8s | default(true)
+      tags: [k8s, kubernetes, dev, cli]
 
-    - name: Configure AWS CLI and SSM Session Manager
+    - name: Configure AWS CLI
       ansible.builtin.include_tasks: tasks/aws.yml
+      when: enable_aws | default(true)
+      tags: [aws, cloud, cli]
 
     - name: Configure Antigravity CLI
       ansible.builtin.include_tasks: tasks/antigravity.yml
+      when: enable_antigravity | default(true)
+      tags: [antigravity, cli]
 
     - name: Configure Model Context Protocol (MCP) Servers
       ansible.builtin.include_tasks: tasks/mcp.yml
+      when: enable_mcp | default(true)
+      tags: [mcp, ai]

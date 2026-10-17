@@ -6,4 +6,5 @@
     accept_external_apps: true
     install_options: "force"
   loop: "{{ gui_casks }}"
+  when: gui_casks is defined and gui_casks | length > 0
   ignore_errors: true

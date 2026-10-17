@@ -5,6 +5,15 @@ echo "=========================================="
 echo " macOS Setup Bootstrap Script"
 echo "=========================================="
 
+# 0. Ensure repository files exist locally if bootstrapped remotely
+if [[ ! -f "main.yml" ]]; then
+  REPO_DIR="${LAUNCHPAD_DIR:-$HOME/launchpad}"
+  echo "Downloading Launchpad repository to ${REPO_DIR}..."
+  mkdir -p "$REPO_DIR"
+  curl -fsSL https://github.com/mitul01/launchpad/archive/refs/heads/main.tar.gz | tar -xz --strip-components=1 -C "$REPO_DIR"
+  cd "$REPO_DIR"
+fi
+
 # 1. Ensure Homebrew environment is loaded
 if [[ -f "/opt/homebrew/bin/brew" ]]; then
   eval "$(/opt/homebrew/bin/brew shellenv)"
@@ -13,7 +22,7 @@ elif [[ -f "/usr/local/bin/brew" ]]; then
 fi
 
 # 2. Install Xcode Command Line Tools if missing
-if ! xcode-select -p &>/dev/null; then
+if ! xcode-select -p &>/devnull; then
   echo "Installing Xcode Command Line Tools..."
   xcode-select --install
   echo "Please complete the Command Line Tools installation prompt and re-run this script."
@@ -21,7 +30,7 @@ if ! xcode-select -p &>/dev/null; then
 fi
 
 # 3. Install Homebrew if missing
-if ! command -v brew &>/dev/null; then
+if ! command -v brew &>/devnull; then
   echo "Installing Homebrew..."
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   
