@@ -1,4 +1,11 @@
 ---
+- name: Add Utility Homebrew taps
+  community.general.homebrew_tap:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ utility_taps }}"
+  when: utility_taps is defined and utility_taps | length > 0
+
 - name: Install Utility CLI tools via Homebrew
   community.general.homebrew:
     name: "{{ item }}"

@@ -1,4 +1,7 @@
 ---
+utility_taps:
+  - datadog-labs/pack
+
 utility_packages:
   - git
   - gh
@@ -12,3 +15,9 @@ utility_packages:
   - watch
   - go-jsonnet
   - conftest
+  - gemini-cli
+  - openssl@3
+  - datadog-labs/pack/pup
+  - telnet
+  - xz
+  - zlib

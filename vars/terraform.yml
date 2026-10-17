@@ -1,12 +1,11 @@
 ---
 iac_taps:
-  - terraform-linters/tflint
+  - flux-iac/tap
 
 iac_packages:
   - tenv
-  - tflint
-  - tfsec
   - terraform-docs
+  - flux-iac/tap/tfctl
 
 terraform_default_versions:
   - "1.8.5"
