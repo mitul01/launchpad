@@ -102,6 +102,7 @@ mcp_notion_api_token: "{{ lookup('env', 'NOTION_API_TOKEN') | default('', true) 
 
 # Adhoc command line utility tools 
 enable_utility: true
+utility_taps: []
 utility_packages:
   - git
   - gh
