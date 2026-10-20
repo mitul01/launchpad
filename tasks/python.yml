@@ -4,6 +4,32 @@
     name: "{{ item }}"
     state: present
   loop: "{{ python_packages }}"
+  failed_when: false
+
+- name: Remove Python versions not explicitly allowed
+  ansible.builtin.shell: |
+    set -e
+    allowed="{{ python_default_versions | join(' ') }}"
+    removed=""
+    while IFS= read -r line; do
+      [ -n "$line" ] || continue
+      version="${line%% *}"
+      if [[ "$version" =~ ^cpython-([0-9]+\.[0-9]+) ]]; then
+        version="${BASH_REMATCH[1]}"
+      else
+        continue
+      fi
+      case " $allowed " in
+        *" $version "*) continue ;;
+      esac
+      "{{ homebrew_prefix }}/bin/uv" python uninstall --managed-python "$version" || true
+      removed="${removed}${removed:+$'\n'}$version"
+    done < <("{{ homebrew_prefix }}/bin/uv" python list --only-installed --managed-python 2>/dev/null)
+    printf '%s\n' "$removed"
+  args:
+    executable: /bin/bash
+  register: stale_python_versions
+  changed_when: stale_python_versions.stdout | trim | length > 0
 
 - name: Install default Python versions using uv
   ansible.builtin.command:
@@ -11,6 +37,29 @@
   loop: "{{ python_default_versions }}"
   register: uv_python_install
   changed_when: "'Installed' in uv_python_install.stderr or 'Installed' in uv_python_install.stdout"
+
+- name: Remove uv tools not explicitly allowed
+  ansible.builtin.shell: |
+    set -e
+    allowed="{{ python_global_tools | join(' ') }}"
+    removed=""
+    while IFS= read -r line; do
+      [ -n "$line" ] || continue
+      case "$line" in
+        -*) continue ;;
+      esac
+      tool="${line%% *}"
+      case " $allowed " in
+        *" $tool "*) continue ;;
+      esac
+      "{{ homebrew_prefix }}/bin/uv" tool uninstall "$tool" || true
+      removed="${removed}${removed:+$'\n'}$tool"
+    done < <("{{ homebrew_prefix }}/bin/uv" tool list 2>/dev/null)
+    printf '%s\n' "$removed"
+  args:
+    executable: /bin/bash
+  register: stale_uv_tools
+  changed_when: stale_uv_tools.stdout | trim | length > 0
 
 - name: Install global Python tools using uv tool
   ansible.builtin.command:

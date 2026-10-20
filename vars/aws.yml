@@ -1,6 +1,8 @@
 ---
 aws_packages:
   - awscli
+  - eksctl
+  - aws/tap/eks-node-viewer
 
 aws_casks: []
 

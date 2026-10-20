@@ -1,7 +1,6 @@
 ---
 node_default_versions:
-  - "lts/latest"
-  - "20"
+  - 24
 
 node_global_packages:
   - pnpm

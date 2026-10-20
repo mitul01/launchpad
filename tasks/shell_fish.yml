@@ -4,6 +4,7 @@
     name: "{{ item }}"
     state: present
   loop: "{{ shell_packages }}"
+  failed_when: false
 
 - name: Ensure Homebrew Fish binary is listed in /etc/shells
   ansible.builtin.lineinfile:

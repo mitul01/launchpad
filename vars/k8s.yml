@@ -2,7 +2,6 @@
 k8s_taps:
   - aws/tap
   - norwoodj/tap
-  - dagger/tap
 
 k8s_packages:
   - kubernetes-cli
@@ -12,11 +11,8 @@ k8s_packages:
   - krew
   - argocd
   - kustomize
-  - eksctl
   - kubeconform
-  - aws/tap/eks-node-viewer
   - norwoodj/tap/helm-docs
-  - dagger/tap/dagger
 
 k8s_krew_plugins:
   - stern

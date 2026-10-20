@@ -22,7 +22,7 @@ elif [[ -f "/usr/local/bin/brew" ]]; then
 fi
 
 # 2. Install Xcode Command Line Tools if missing
-if ! xcode-select -p &>/devnull; then
+if ! xcode-select -p &>/dev/null; then
   echo "Installing Xcode Command Line Tools..."
   xcode-select --install
   echo "Please complete the Command Line Tools installation prompt and re-run this script."
@@ -30,7 +30,7 @@ if ! xcode-select -p &>/devnull; then
 fi
 
 # 3. Install Homebrew if missing
-if ! command -v brew &>/devnull; then
+if ! command -v brew &>/dev/null; then
   echo "Installing Homebrew..."
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   
