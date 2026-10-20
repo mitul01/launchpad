@@ -41,6 +41,7 @@ launchpad/
 │   ├── k8s.yml          # K8s toolchain (kubectl, helm, k9s, kubectx, krew plugins, argocd)
 │   ├── aws.yml          # AWS CLI v2, SSM plugin, 1Password CLI, PropertyGuru SSO profiles
 │   ├── antigravity.yml  # Antigravity CLI (agy) installation & setup
+│   ├── bitwarden.yml    # Bitwarden CLI (bws) installation
 │   └── mcp.yml          # MCP server settings (GitHub, Jira, Confluence, Datadog, Steampipe)
 │
 ├── tasks/
@@ -56,6 +57,7 @@ launchpad/
 │   ├── k8s.yml
 │   ├── aws.yml
 │   ├── antigravity.yml
+│   ├── bitwarden.yml
 │   └── mcp.yml
 │
 └── templates/
@@ -156,4 +158,5 @@ Filter execution using `--tags` or `--skip-tags`:
 | Kubernetes | `k8s`, `kubernetes`, `dev`, `cli` |
 | AWS | `aws`, `cloud`, `cli` |
 | Antigravity | `antigravity`, `cli` |
+| Bitwarden | `bitwarden`, `cli` |
 | MCP | `mcp`, `ai` |

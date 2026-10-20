@@ -19,6 +19,7 @@
     - vars/k8s.yml
     - vars/aws.yml
     - vars/antigravity.yml
+    - vars/bitwarden.yml
     - vars/mcp.yml
 
   pre_tasks:
@@ -107,6 +108,11 @@
       ansible.builtin.include_tasks: tasks/antigravity.yml
       when: enable_antigravity | default(true)
       tags: [antigravity, cli]
+
+    - name: Configure Bitwarden CLI
+      ansible.builtin.include_tasks: tasks/bitwarden.yml
+      when: enable_bitwarden | default(true)
+      tags: [bitwarden, cli]
 
     - name: Configure Model Context Protocol (MCP) Servers
       ansible.builtin.include_tasks: tasks/mcp.yml

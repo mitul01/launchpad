@@ -1,0 +1,12 @@
+---
+- name: Check if Bitwarden CLI (bws) is installed
+  ansible.builtin.command:
+    cmd: "which bws"
+  register: bws_check
+  changed_when: false
+  failed_when: false
+
+- name: Install Bitwarden CLI (bws) via official install script
+  ansible.builtin.shell: |
+    curl -fsSL {{ bitwarden_install_script_url }} | sh
+  when: bws_check.rc != 0
