@@ -1,4 +1,11 @@
 ---
+- name: Install Ghostty
+  community.general.homebrew_cask:
+    name: "ghostty"
+    state: present
+    accept_external_apps: true
+    install_options: "force"
+
 - name: Create Ghostty configuration directory
   ansible.builtin.file:
     path: "{{ ansible_facts['user_dir'] }}/.config/ghostty"

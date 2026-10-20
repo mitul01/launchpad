@@ -13,9 +13,7 @@ fish_plugins:
 
 fish_aliases:
   g: "git"
-  ll: "eza -l --icons"
-  la: "eza -la --icons"
-  cat: "bat"
+  k : "kubectl"
 
 fish_environment_vars:
   EDITOR: "nano"
@@ -23,4 +21,4 @@ fish_environment_vars:
 
 ghostty_font_family: "JetBrainsMono Nerd Font"
 ghostty_font_size: 13
-ghostty_theme: "catppuccin-mocha"
+ghostty_theme: "Catppuccin Mocha"

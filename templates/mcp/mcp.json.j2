@@ -18,14 +18,7 @@
 {% if mcp_enable_notion | default(false) %}
 {% set _ = mcp_servers.update({
   "notion": {
-    "command": "npx",
-    "args": [
-      "-y",
-      "@notionhq/mcp-server-notion"
-    ],
-    "env": {
-      "NOTION_API_TOKEN": mcp_notion_api_token
-    }
+    "serverUrl": "https://mcp.notion.com/mcp"
   }
 }) %}
 {% endif %}

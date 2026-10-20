@@ -6,11 +6,13 @@
   loop: "{{ k8s_taps }}"
   when: k8s_taps is defined and k8s_taps | length > 0
 
+
 - name: Install Kubernetes CLI tools via Homebrew
   community.general.homebrew:
     name: "{{ item }}"
     state: present
   loop: "{{ k8s_packages }}"
+
 
 - name: Install Kubernetes GUI applications
   community.general.homebrew_cask:
@@ -21,6 +23,7 @@
   loop: "{{ k8s_casks }}"
   when: k8s_casks is defined and k8s_casks | length > 0
   ignore_errors: true
+
 
 - name: Install Krew plugins
   ansible.builtin.shell: |

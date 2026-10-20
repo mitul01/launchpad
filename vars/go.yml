@@ -1,6 +1,6 @@
 ---
 go_packages:
-  - go
+  - go@1.27
   - golangci-lint
   - gopls
 

@@ -29,26 +29,6 @@
   register: fnm_default_result
   changed_when: false
 
-- name: Remove stale global Node packages not explicitly allowed
-  ansible.builtin.shell: |
-    set -e
-    allowed="{{ node_global_packages | join(' ') }}"
-    removed=""
-    while IFS= read -r line; do
-      [ -n "$line" ] || continue
-      package="${line%% *}"
-      case " $allowed " in
-        *" $package "*) continue ;;
-      esac
-      "{{ homebrew_prefix }}/bin/fnm" exec --using "{{ node_default_versions[0] }}" npm uninstall -g "$package" || true
-      removed="${removed}${removed:+$'\n'}$package"
-    done < <("{{ homebrew_prefix }}/bin/fnm" exec --using "{{ node_default_versions[0] }}" npm list -g --depth=0 --json 2>/dev/null | python3 -c 'import json,sys; data=json.load(sys.stdin); pkgs=data.get("dependencies",{}); print("\n".join(sorted(pkgs.keys())))')
-    printf '%s\n' "$removed"
-  args:
-    executable: /bin/bash
-  register: stale_node_packages
-  changed_when: stale_node_packages.stdout | trim | length > 0
-
 - name: Install global Node packages (pnpm, yarn, typescript)
   ansible.builtin.shell: |
     "{{ homebrew_prefix }}/bin/fnm" exec --using "{{ node_default_versions[0] }}" npm install -g {{ item }}

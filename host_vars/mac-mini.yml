@@ -1,0 +1,120 @@
+# Ghostty terminal
+enable_ghostty: true
+# Fish shell setup
+enable_shell: true
+
+# Code Language support
+# Python
+enable_python: true
+python_default_versions:
+  - "3.12"
+
+python_global_tools:
+  - pipx
+
+# Node
+enable_node: false
+node_default_versions:
+  - "24"
+
+node_global_packages:
+  - pnpm
+  - yarn
+  - typescript
+
+# Golang
+enable_go: true
+go_packages:
+  - go@1.27
+  - golangci-lint
+  - gopls
+
+go_global_tools:
+  - "github.com/air-verse/air@latest"
+  - "github.com/go-delve/delve/cmd/dlv@latest"
+
+# IAC / Devops
+# Terraform
+enable_terraform: true
+terraform_default_versions:
+  - "1.8.5"
+
+opentofu_default_versions:
+  - "1.7.0"
+
+terragrunt_default_versions:
+  - "0.58.0"
+
+# Containers
+enable_containers: true
+container_casks:
+  - orbstack
+
+container_packages:
+  - docker-compose
+  - docker-buildx
+  - lazydocker
+  - ctop
+
+# Kubernetes
+enable_k8s: true
+k8s_taps:
+  - fluxcd/tap
+  - norwoodj/tap
+
+k8s_packages:
+  - kubernetes-cli
+  - helm
+  - kubectx
+  - krew
+  - kustomize
+  - kubeconform
+  - norwoodj/tap/helm-docs
+  - fluxcd/tap/flux
+
+k8s_krew_plugins: []
+
+# Cloud Providers tools
+enable_aws: false
+aws_packages:
+  - awscli
+aws_profiles:
+  - name: "nexus"
+    region: "us-east-1"
+    output: "json"
+
+aws_default_region: "us-east-1"
+aws_default_output: "json"
+
+# AI Related tools
+enable_antigravity: true
+
+enable_mcp: true
+# Github MCP
+mcp_enable_github: true
+mcp_github_token: "{{ lookup('env', 'GITHUB_TOKEN') | default('', true) }}"
+# Notion MCP
+mcp_enable_notion: true
+mcp_notion_api_token: "{{ lookup('env', 'NOTION_API_TOKEN') | default('', true) }}"
+
+# Adhoc command line utility tools 
+enable_utility: true
+utility_packages:
+  - git
+  - gh
+  - jq
+  - yq
+  - ripgrep
+  - yamllint
+  - wget
+  - watch
+  - telnet
+  - xz
+  - zlib
+
+# GUI tools
+enable_gui: true
+gui_casks:
+  - visual-studio-code
+  - spotify
+  - termius
